@@ -8,7 +8,8 @@
     "dist": "./node_modules/coffee-script/bin/coffee --output . --compile *.coffee",
     "lint": "./node_modules/coffeelint/bin/coffeelint *.coffee",
     "bower": "bower install --force --production --no-interactive",
-    "nahual": "nahual --browser chrome --target saucelabs -E 'python\\ -m\\ SimpleHTTPServer'"
+    "nahual": "nahual --browser chrome -S -E 'python -m SimpleHTTPServer'",
+    "nahual:ci": "npm run nahual -- --target saucelabs"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,6 @@
     "chromedriver": "^2.23.1",
     "coffee-script": "1.10.0",
     "coffeelint": "1.12.1",
-    "nahual": "0.1.1"
+    "nahual": "0.1.2"
   }
 }

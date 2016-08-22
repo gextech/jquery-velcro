@@ -12,7 +12,7 @@ node_js:
 script:
 - npm run lint
 - npm run bower
-- npm run nahual
+- npm run nahual:ci
 env:
   global:
   - secure: bdxsJSpAzpMcCzZFrRr9927ysMi8MRl0J9ndJnYZMFLD46Dt/K7gUIkh4YMvY5Qd4WAC9pZ9KTHLm4E/UR0CQ3Fe0IGDLmhI8LD8PTIvVWVyZe0djMVXR+O4RawKsitUOMoF9v2iLV8F9+Bbtbm0izcj0rAzH/EPsYXEDlz9F3E9iu7xIdpzGyEvBuj+GGIag66x6Rpd7BhohohcUo5x9dB8kOqZuhJbsohZc+ZI0Z6I1D0SmBeadnkMl6oqWwayspP4XPukllTWA1g/TweEevrfb9rxZ2CTDXZ9qEKsCpYrSrZyZc6eIM5q2m1t6UY933MFPWCu6WMG3TLulq3eTn/Rd42wHh7igfZfZlF+TBF7UQ22NV9Ma3g5HycBKFV0IMuMuHaN8T3oT84PJPNdIOhohL2WFAYgZYbAICOmkze4FOSqJ5AfqNBgbokCWbOdupsj+tcbdbn8avUvLXVJszYgg+Ty+OTS3Mv+qec789xptCnUQjCYGskha4pLV8pTz1V75bHcjNzjTYrl43We5DGoXK5toVGPak9I+xrYMkZgbCoPZQrP3Phfn2P04p0k2/KYgHMTn1mPhGAVAKcNzTjH1oo+Nkywwy+lf8j+98aE7/k6S+N/x+rftpaBqwMEWnNaXxMViQqgGUGICXA3FTSSGRGfpQelzK/d+88lJDM=
