@@ -22,20 +22,6 @@ Scenario: Scrolling backward
   Then should I see "backward" within "#scroll-kit-info .from_to"
   And should I see "static" within "#scroll-kit-info .from_to"
 
-Scenario: Scrolling quickly
-
-  Given loaded "/"
-  When I scroll to "2000"
-  When I scroll to "0"
-  Then should I see "backward" within "#scroll-kit-info .from_to"
-
-  When I scroll to "0"
-  When I scroll to "2000"
-  Then should I see "forward" within "#scroll-kit-info .from_to"
-
-  When I stop for "1s"
-  And should I see "static" within "#scroll-kit-info .from_to"
-
 Scenario: Check scrolling indices
 
   Given loaded "/"
