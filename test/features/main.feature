@@ -20,6 +20,7 @@ Scenario: Scrolling backward
   When I scroll to "2000"
   When I stop for "1s"
   When I scroll to "0"
+  Then should I see "0" within "#scroll-kit-info .keys"
   Then should I see "static / backward" within "#scroll-kit-info .from_to"
 
 # Scenario: Scrolling backward
