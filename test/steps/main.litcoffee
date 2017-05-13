@@ -10,6 +10,7 @@ Given loaded "$URI".
         .url('http://localhost:8000' + path)
         .waitForElementVisible('body', 1000)
         .resizeWindow(800, 600).pause(50)
+        .execute('scrollTo(0,0)').pause(50)
 
 When I stop for "$SECONDS".
 
