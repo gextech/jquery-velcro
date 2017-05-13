@@ -18,6 +18,7 @@ Scenario: Scrolling a bit
   Then should I see "forward / backward" within "#scroll-kit-info .from_to"
 
   When I stop for "1s"
+  When I scroll to "0"
   Then should I see "backward / static" within "#scroll-kit-info .from_to"
 
 Scenario: Scrolling so far

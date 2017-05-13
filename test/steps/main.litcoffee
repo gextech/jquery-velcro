@@ -10,7 +10,8 @@ Given loaded "$URI".
         .url('http://localhost:8000' + path)
         .waitForElementVisible('body', 1000)
         .resizeWindow(800, 600).pause(50)
-        .execute('scrollTo(0,0)').pause(50)
+        .execute('scrollTo(0,0)')
+        .pause(1000)
 
 When I stop for "$SECONDS".
 
@@ -22,7 +23,7 @@ When I scroll to "$OFFSET_TOP".
 
     (offset_top) ->
       @browser
-        .execute("scrollTo(0,#{offset_top})")
+        .execute("scrollTo(0,#{offset_top})").pause(50)
         .expect.element('#scroll-kit-info .scroll').text.to.equal(offset_top)
 
 $VERB should I see "$TEXT" within "$SELECTOR".
