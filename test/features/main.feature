@@ -1,17 +1,14 @@
-Feature: Visible elements
+Feature: Scroll
 
-Scenario: First load
+Scenario: No scrolling
 
   Given loaded "/"
-  When I scroll to "0"
-  Then should I see "0" within "#scroll-kit-info .keys"
   And should I see "initial / static" within "#scroll-kit-info .from_to"
 
 Scenario: Scrolling forward
 
   Given loaded "/"
   When I scroll to "1000"
-  Then should I see "0" within "#scroll-kit-info .keys"
   Then should I see "static / forward" within "#scroll-kit-info .from_to"
 
 Scenario: Scrolling backward
@@ -20,7 +17,6 @@ Scenario: Scrolling backward
   When I scroll to "2000"
   When I stop for "1s"
   When I scroll to "0"
-  Then should I see "0" within "#scroll-kit-info .keys"
   Then should I see "static / backward" within "#scroll-kit-info .from_to"
 
 # Scenario: Scrolling backward
