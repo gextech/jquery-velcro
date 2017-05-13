@@ -3,13 +3,15 @@ Feature: Scroll
 Scenario: No scrolling
 
   Given loaded "/"
-  And should I see "initial / static" within "#scroll-kit-info .from_to"
+  And should I see "static" within "#scroll-kit-info .from_to"
+  And should I see "initial" within "#scroll-kit-info .from_to"
 
 Scenario: Scrolling forward
 
   Given loaded "/"
   When I scroll to "1000"
-  Then should I see "static / forward" within "#scroll-kit-info .from_to"
+  Then should I see "forward" within "#scroll-kit-info .from_to"
+  Then should I see "static" within "#scroll-kit-info .from_to"
 
 Scenario: Scrolling backward
 
@@ -17,7 +19,8 @@ Scenario: Scrolling backward
   When I scroll to "2000"
   When I stop for "1s"
   When I scroll to "0"
-  Then should I see "static / backward" within "#scroll-kit-info .from_to"
+  Then should I see "backward" within "#scroll-kit-info .from_to"
+  Then should I see "static" within "#scroll-kit-info .from_to"
 
 # Scenario: Scrolling backward
 

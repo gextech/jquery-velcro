@@ -32,4 +32,4 @@ $VERB should I see "$TEXT" within "$SELECTOR".
 
     (text, selector) ->
       @browser
-        .expect.element(selector).text.to.equal(text)
+        .expect.element(selector).text.to.contain(text)
