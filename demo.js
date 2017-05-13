@@ -9,9 +9,13 @@ $(function() {
 
   var sticky = $.scrollKit.find('x');
 
+  if (!sticky) {
+    return;
+  }
+
   $.scrollKit.eventHandler(function(e) {
     if (e.type === 'passing' && e.node.offset.is_nearest) {
-      $.scrollKit.pop(sticky, e.node.offset.index > 6);
+      $.scrollKit.pop(sticky, e.node.offset.index >= 6);
     }
   });
 });

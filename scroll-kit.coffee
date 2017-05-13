@@ -53,13 +53,13 @@ debug =
 
   style: '''
     #scroll-kit-info {
-      border-radius: 0 0 5px 0;
+      border-radius: 0 0 0 5px;
       background: rgba(0, 0, 0, .6);
       color: #FFFFFF;
       text-shadow: 1px 1px 1px #000000;
       position: fixed;
       padding: 10px;
-      left: 0;
+      right: 0;
       top: 0;
       z-index: 2147483647;
       font-size: 13px;
