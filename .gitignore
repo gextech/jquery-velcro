@@ -2,4 +2,5 @@ bower_components/**/*.*
 !bower_components/jquery/dist/jquery.js
 node_modules
 generated
+.tarima
 *.log
