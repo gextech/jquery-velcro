@@ -1,4 +1,4 @@
-VERSION = '0.2.5'
+VERSION = '0.3.5'
 
 offsets = {}
 group_id = 0
@@ -8,6 +8,8 @@ last_direction = 'initial'
 
 event_handler = null
 static_interval = null
+
+ticking = false
 
 # :)
 state =
@@ -51,13 +53,13 @@ debug =
 
   style: '''
     #scroll-kit-info {
-      border-radius: 0 0 5px 0;
+      border-radius: 0 0 0 5px;
       background: rgba(0, 0, 0, .6);
       color: #FFFFFF;
       text-shadow: 1px 1px 1px #000000;
       position: fixed;
       padding: 10px;
-      left: 0;
+      right: 0;
       top: 0;
       z-index: 2147483647;
       font-size: 13px;
@@ -96,6 +98,15 @@ document.head.appendChild style
 debug.info('jump').on 'change', (e) ->
   return unless debug.is_enabled
   $.scrollKit.scrollTo(e.target.selectedIndex)
+
+prevent_scroll = (e) ->
+  delta = if (e.type is 'mousewheel') then e.originalEvent.wheelDelta else (e.originalEvent.detail * -40)
+  if (delta < 0 and (@scrollHeight - @offsetHeight - @scrollTop) <= 0)
+    @scrollTop = @scrollHeight
+    e.preventDefault()
+  else if (delta > 0 and delta > @scrollTop)
+    @scrollTop = 0
+    e.preventDefault()
 
 trigger = (type, params) ->
   return unless event_handler
@@ -140,7 +151,7 @@ test_on_scroll = ->
   clearTimeout static_interval
   static_interval = setTimeout ->
     set_classes('static')
-  , 260
+  , 360
 
   if debug.is_enabled
     debug.info('scroll').text(scroll_top)
@@ -268,10 +279,10 @@ update_sticky = (node) ->
   node.offset_top = offsets[node.data.group]
 
   # original value
-  node.orig_height = node.el.outerHeight()
+  node.orig_height = node.data.fixed_height || node.el.outerHeight()
 
   # increment the node offset_top based on current group/stack
-  offsets[node.data.group] += node.orig_height unless node.isFloat
+  offsets[node.data.group] += node.orig_height if (!node.isFloat && node.isFixed)
 
   return true if node.isFixed
 
@@ -311,6 +322,9 @@ initialize_sticky = (node) ->
   else
     el.parent()
 
+  if data.fit
+    el.on 'DOMMouseScroll mousewheel', prevent_scroll
+
   # auto-grouping
   unless data.group
     unless parent.data('scrollKit_gid') > 0
@@ -334,7 +348,7 @@ initialize_sticky = (node) ->
   return
 
 destroy_sticky = (node) ->
-  node.el.attr('style', '').removeClass 'fit stuck bottom'
+  node.el.attr('style', '').removeClass 'fit stuck bottom sit'
   node.placeholder.remove()
   return
 
@@ -351,6 +365,65 @@ check_if_fit = (sticky) ->
     sticky.el.css 'height', Math.min(fitted_top - sticky.passing_top, sticky.height)
   else
     sticky.el.removeClass('fit') if sticky.el.hasClass('fit')
+
+check_if_carry = (sticky) ->
+
+  ## Forward - Sit
+  if body.hasClass('forward')
+
+    ## Normal Sticky - float
+    if sticky.el.hasClass('stuck')
+      sticky.el.removeClass('stuck')
+        .addClass('sit') ## pretend was Sit
+      check_if_can_float sticky
+
+    _offset = sticky.el.offset()
+    passing_bottom = (sticky.height - win_height + _offset.top)
+
+    if last_scroll >= passing_bottom
+      return if sticky.el.hasClass 'bottom'
+      check_if_can_sit sticky
+
+    ## Hold on, boy!
+    if (last_scroll + win_height) >= sticky.passing_bottom
+      check_if_can_bottom sticky
+
+  ## Backward - Sticky top
+  else if body.hasClass('backward')
+    check_if_can_float sticky
+
+    ## Sticky start - reset pos
+    if sticky.el.hasClass('bottom')
+      sticky.el.removeClass('bottom')
+      update_sticky sticky
+
+    ## Sticky
+    if last_scroll <= sticky.passing_top
+      check_if_can_stick sticky
+      if last_scroll <= sticky.parent.offset().top
+        check_if_can_unstick sticky
+        update_sticky sticky
+
+check_if_can_sit = (sticky) ->
+  unless sticky.el.hasClass('sit')
+    sticky.el.addClass('sit')
+      .attr('style', '').css
+        position: 'fixed'
+        width: sticky.width
+        height: sticky.height
+        left: sticky.offset.left
+        bottom: 0
+
+check_if_can_float = (sticky) ->
+  if sticky.el.hasClass('sit')
+    _offset = sticky.el.offset()
+    sticky.el.removeClass('sit')
+      .attr('style', '').css
+        position: 'absolute'
+        width: sticky.width
+        top: _offset.top - sticky.parent.offset().top
+        left: sticky.position.left
+    update_sticky sticky
 
 check_if_can_stick = (sticky) ->
   unless sticky.el.hasClass('stuck')
@@ -370,15 +443,16 @@ check_if_can_unstick = (sticky) ->
     if sticky.placeholder
       sticky.placeholder.css('display', 'none')
 
-    sticky.el.removeClass('fit stuck bottom').attr 'style', ''
+    sticky.el.removeClass('fit stuck bottom sit').attr 'style', ''
 
 check_if_can_bottom = (sticky) ->
   unless sticky.el.hasClass('bottom')
-    sticky.el.addClass('bottom').css
+    sticky.el.removeClass('sit').addClass('bottom').css
       position: 'absolute'
       left: sticky.position.left
       bottom: sticky.fixed_bottom or 0
       top: 'auto'
+      width: sticky.width
       height: sticky.height if sticky.data.fit
 
 check_if_can_unbottom = (sticky) ->
@@ -392,10 +466,12 @@ calculate_all_stickes = ->
   for sticky in state.stickyNodes
     continue if sticky.isFixed or sticky.data.disabled
 
-    if last_scroll <= sticky.passing_top
-      check_if_can_unstick(sticky)
+    if sticky.data.carry or sticky.el.hasClass('is-sticky--carry')
+      check_if_carry sticky
+    else if last_scroll <= sticky.passing_top
+      check_if_can_unstick sticky
     else
-      check_if_can_stick(sticky)
+      check_if_can_stick sticky
 
       if sticky.data.bottoming isnt false
         if (last_scroll + sticky.passing_height) >= sticky.passing_bottom
@@ -445,14 +521,23 @@ update_everything = (destroy) ->
       .val state.gap.nearest
   return
 
+## not sure about this...
+## also, will not work for new img/iframe created elems
 $('img, iframe').on 'load error', ->
   update_everything()
 
 win.on 'touchmove scroll', ->
-  test_for_scroll_and_offsets()
+  unless ticking
+    requestAnimationFrame ->
+      test_for_scroll_and_offsets()
+      ticking = false
+  ticking = true
 
 win.on 'resize', ->
-  update_everything()
+  clearTimeout static_interval
+  static_interval = setTimeout ->
+    update_everything()
+  , 260
 
 $.scrollKit = (params) ->
   if typeof params is 'function'
@@ -536,8 +621,10 @@ $.scrollKit.destroy = (node) ->
   # TODO: detach all content-nodes
 
 $.scrollKit.scrollTo = (index, callback) ->
+  contentNode  = state.contentNodes[index]
+  _offset = $(contentNode).offset()
   html.animate
-    scrollTop: state.contentNodes[index].offset.top - state.offsetTop
+    scrollTop: _offset.top - state.offsetTop
   , 260, 'swing', callback
   return
 
