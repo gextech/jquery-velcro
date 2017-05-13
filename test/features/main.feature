@@ -14,11 +14,19 @@ Scenario: Scrolling a bit
   Then should I see "0" within "#scroll-kit-info .keys"
   And should I see "static / forward" within "#scroll-kit-info .from_to"
 
+Scenario: Scrolling a bit II
+
+  Given loaded "/"
+  When I scroll to "1000"
   When I scroll to "0"
   Then should I see "forward / backward" within "#scroll-kit-info .from_to"
 
-  When I stop for "1s"
+Scenario: Scrolling a bit III
+
+  Given loaded "/"
+  When I scroll to "1000"
   When I scroll to "0"
+  When I stop for "1s"
   Then should I see "backward / static" within "#scroll-kit-info .from_to"
 
 Scenario: Scrolling so far
