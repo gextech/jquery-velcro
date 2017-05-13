@@ -1,11 +1,11 @@
 {
   "name": "scroll-kit",
-  "version": "0.3.5",
+  "version": "0.4.0-dev",
   "description": "Take care of your elements on the viewport",
   "main": "scroll-kit.js",
   "scripts": {
-    "dev": "yarn dist -- -s",
-    "dist": "tarima -S scroll-kit -D .",
+    "dev": "yarn dist -- development -sL tarima-lr -w index.html,demo.css",
+    "dist": "tarima -S scroll-kit.coffee -D . -e",
     "lint": "coffeelint *.coffee",
     "bower": "bower install --force --production --no-interactive",
     "nahual": "nahual -ST saucelabs -E 'python -m SimpleHTTPServer'"
