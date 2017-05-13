@@ -1,23 +1,27 @@
 ---
 patterns:
+  URI: '"(\/.*?)"'
+  NUMBER: '"(\d+)"'
+  SECONDS: '"(\d+)s"'
   VERB: "(?:And|Then)"
 ---
 
-Given loaded "$URI".
+Given loaded $URI.
 
-    (path) ->
+    (path, offset_top) ->
       @browser
         .url('http://localhost:8000' + path)
-        .waitForElementVisible('body', 1000)
-        .resizeWindow(800, 600)
+        .waitForElementVisible('body', 500)
+        .resizeWindow(800, 600).pause(100)
+        .execute("scrollTo(0,#{offset_top || 0})")
 
-When I stop for "$SECONDS".
+When I stop for $SECONDS.
 
     (seconds) ->
       @browser
         .pause(parseInt(seconds, 10) * 1000)
 
-When I scroll to "$OFFSET_TOP".
+When I scroll to $NUMBER.
 
     (offset_top) ->
       @browser
