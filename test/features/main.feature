@@ -27,5 +27,3 @@ Scenario: Check scrolling indices
   Given loaded "/"
   When I scroll to "4000"
   Then should I see "2, 3" within "#scroll-kit-info .keys"
-  Then should I see "static" within "#scroll-kit-info .from_to"
-  And should I see "forward" within "#scroll-kit-info .from_to"
