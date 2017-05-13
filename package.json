@@ -8,7 +8,7 @@
     "dist": "tarima -S scroll-kit.coffee -D . -e",
     "lint": "coffeelint *.coffee",
     "bower": "bower install --force --production --no-interactive",
-    "nahual": "nahual -SE 'python -m SimpleHTTPServer'"
+    "nahual": "nahual -E 'python -m SimpleHTTPServer'"
   },
   "repository": {
     "type": "git",
