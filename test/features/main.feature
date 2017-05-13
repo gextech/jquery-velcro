@@ -10,13 +10,17 @@ Scenario: First load
 Scenario: Scrolling forward
 
   Given loaded "/"
-
   When I scroll to "1000"
   Then should I see "0" within "#scroll-kit-info .keys"
   Then should I see "static / forward" within "#scroll-kit-info .from_to"
 
-  When I stop for "3s"
-  Then should I see "forward / static" within "#scroll-kit-info .from_to"
+Scenario: Scrolling backward
+
+  Given loaded "/"
+  When I scroll to "2000"
+  When I stop for "1s"
+  When I scroll to "0"
+  Then should I see "static / backward" within "#scroll-kit-info .from_to"
 
 # Scenario: Scrolling backward
 
