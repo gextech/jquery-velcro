@@ -16,7 +16,7 @@ Scenario: Scrolling forward
 
   When I stop for "1s"
   When I scroll to "3000"
-  Then should I see "static / forward" within "#scroll-kit-info .from_to"
+  Then should I see "forward / static" within "#scroll-kit-info .from_to"
 
 # Scenario: Scrolling backward
 
