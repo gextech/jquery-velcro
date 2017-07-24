@@ -538,7 +538,7 @@ update_everything = (destroy) ->
 $('img, iframe').on 'load error', ->
   update_everything()
 
-isTicking = () ->
+isTicking = ->
    unless ticking
     requestAnimationFrame ->
       test_for_scroll_and_offsets()
