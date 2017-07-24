@@ -336,7 +336,6 @@ initialize_sticky = (node) ->
   if data.fit    
     node.addEventListener 'DOMMouseScroll wheel', prevent_scroll, if supportsPassive then passive: true else false
 
-
   # auto-grouping
   unless data.group
     unless parent.data('scrollKit_gid') > 0
@@ -538,12 +537,13 @@ update_everything = (destroy) ->
 $('img, iframe').on 'load error', ->
   update_everything()
 
-win.on 'touchmove scroll', supportsPassive ? { passive: true } : false ->
+win.addEventListener 'touchmove scroll', ( -> 
   unless ticking
     requestAnimationFrame ->
       test_for_scroll_and_offsets()
       ticking = false
   ticking = true
+  ), if supportsPassive then passive: true else false
 
 win.on 'resize', ->
   clearTimeout static_interval
