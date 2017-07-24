@@ -334,7 +334,8 @@ initialize_sticky = (node) ->
     el.parent()
 
   if data.fit    
-    node.addEventListener 'DOMMouseScroll wheel', prevent_scroll, if supportsPassive then passive: true else false
+    node.addEventListener 'DOMMouseScroll', prevent_scroll, if supportsPassive then passive: true else false
+    node.addEventListener 'wheel', prevent_scroll, if supportsPassive then passive: true else false
 
   # auto-grouping
   unless data.group
@@ -537,13 +538,15 @@ update_everything = (destroy) ->
 $('img, iframe').on 'load error', ->
   update_everything()
 
-window.addEventListener 'touchmove scroll', ( -> 
-  unless ticking
+isTicking = () ->
+   unless ticking
     requestAnimationFrame ->
       test_for_scroll_and_offsets()
       ticking = false
   ticking = true
-  ), if supportsPassive then passive: true else false
+
+window.addEventListener 'touchmove', isTicking ,if supportsPassive then passive: true else false
+window.addEventListener 'scroll', isTicking ,if supportsPassive then passive: true else false
 
 win.on 'resize', ->
   clearTimeout static_interval
