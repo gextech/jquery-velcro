@@ -333,7 +333,7 @@ initialize_sticky = (node) ->
   else
     el.parent()
 
-  if data.fit    
+  if data.fit
     node.addEventListener 'DOMMouseScroll', prevent_scroll, if supportsPassive then passive: true else false
     node.addEventListener 'wheel', prevent_scroll, if supportsPassive then passive: true else false
 
@@ -539,7 +539,7 @@ $('img, iframe').on 'load error', ->
   update_everything()
 
 isTicking = ->
-   unless ticking
+  unless ticking
     requestAnimationFrame ->
       test_for_scroll_and_offsets()
       ticking = false
