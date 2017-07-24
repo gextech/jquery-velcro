@@ -333,8 +333,9 @@ initialize_sticky = (node) ->
   else
     el.parent()
 
-  if data.fit
-    el.on 'DOMMouseScroll mousewheel', prevent_scroll, supportsPassive ? { passive: true } : false
+  if data.fit    
+    node.addEventListener 'DOMMouseScroll wheel', prevent_scroll, if supportsPassive then passive: true else false
+
 
   # auto-grouping
   unless data.group
