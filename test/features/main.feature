@@ -22,8 +22,8 @@ Scenario: Scrolling backward
   Then should I see "backward" within "#scroll-kit-info .from_to"
   And should I see "static" within "#scroll-kit-info .from_to"
 
-Scenario: Check scrolling indices
+# Scenario: Check scrolling indices
 
-  Given loaded "/"
-  When I scroll to "4000"
-  Then should I see "2, 3" within "#scroll-kit-info .keys"
+#   Given loaded "/"
+#   When I scroll to "4000"
+#   Then should I see "2, 3" within "#scroll-kit-info .keys"
