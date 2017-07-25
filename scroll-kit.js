@@ -1,4 +1,4 @@
-var VERSION, body, calculate_all_offsets, calculate_all_stickes, check_if_can_bottom, check_if_can_float, check_if_can_sit, check_if_can_stick, check_if_can_unbottom, check_if_can_unstick, check_if_carry, check_if_fit, debug, destroy_sticky, event_handler, group_id, html, init_sticky, initialize_sticky, last_direction, last_scroll, offsets, placeholder, prevent_scroll, refresh_all_stickies, set_classes, state, static_interval, style, test_all_offsets, test_for_scroll_and_offsets, test_node_enter, test_node_exit, test_node_passing, test_node_scroll, test_on_scroll, ticking, trigger, update_everything, update_margins, update_metrics, update_offsets, update_sticky, win, win_height;
+var VERSION, body, calculate_all_offsets, calculate_all_stickes, check_if_can_bottom, check_if_can_float, check_if_can_sit, check_if_can_stick, check_if_can_unbottom, check_if_can_unstick, check_if_carry, check_if_fit, debug, destroy_sticky, e, event_handler, group_id, html, init_sticky, initialize_sticky, isTicking, last_direction, last_scroll, offsets, opts, placeholder, prevent_scroll, refresh_all_stickies, set_classes, state, static_interval, style, supportsPassive, test_all_offsets, test_for_scroll_and_offsets, test_node_enter, test_node_exit, test_node_passing, test_node_scroll, test_on_scroll, ticking, trigger, update_everything, update_margins, update_metrics, update_offsets, update_sticky, win, win_height;
 
 VERSION = '0.3.5';
 
@@ -37,6 +37,19 @@ html = $('html,body');
 
 body = $(document.body);
 
+supportsPassive = false;
+
+try {
+  opts = Object.defineProperty({}, 'passive', {
+    get: function() {
+      supportsPassive = true;
+    }
+  });
+  window.addEventListener('test', null, opts);
+} catch (error) {
+  e = error;
+}
+
 debug = {
   is_enabled: false,
   element: $('<div id="scroll-kit-info">\n  <span class="gap"></span>\n  <label>Indexes: <span class="keys"></span></label>\n  <label>ScrollY: <span class="scroll"></span></label>\n  <label>ScrollTo: <select class="jump"></select></label>\n  <label>Direction: <span class="from_to"></span></label>\n</div>').hide().appendTo(body),
@@ -64,11 +77,9 @@ prevent_scroll = function(e) {
   var delta;
   delta = e.type === 'mousewheel' ? e.originalEvent.wheelDelta : e.originalEvent.detail * -40;
   if (delta < 0 && (this.scrollHeight - this.offsetHeight - this.scrollTop) <= 0) {
-    this.scrollTop = this.scrollHeight;
-    return e.preventDefault();
+    return this.scrollTop = this.scrollHeight;
   } else if (delta > 0 && delta > this.scrollTop) {
-    this.scrollTop = 0;
-    return e.preventDefault();
+    return this.scrollTop = 0;
   }
 };
 
@@ -310,7 +321,12 @@ initialize_sticky = function(node) {
   data.group || (data.group = 0);
   parent = data.parent ? el.closest(data.parent) : el.parent();
   if (data.fit) {
-    el.on('DOMMouseScroll mousewheel', prevent_scroll);
+    node.addEventListener('DOMMouseScroll', prevent_scroll, supportsPassive ? {
+      passive: true
+    } : false);
+    node.addEventListener('wheel', prevent_scroll, supportsPassive ? {
+      passive: true
+    } : false);
   }
   if (!data.group) {
     if (!(parent.data('scrollKit_gid') > 0)) {
@@ -545,7 +561,7 @@ $('img, iframe').on('load error', function() {
   return update_everything();
 });
 
-win.on('touchmove scroll', function() {
+isTicking = function() {
   if (!ticking) {
     requestAnimationFrame(function() {
       test_for_scroll_and_offsets();
@@ -553,7 +569,15 @@ win.on('touchmove scroll', function() {
     });
   }
   return ticking = true;
-});
+};
+
+window.addEventListener('touchmove', isTicking, supportsPassive ? {
+  passive: true
+} : false);
+
+window.addEventListener('scroll', isTicking, supportsPassive ? {
+  passive: true
+} : false);
 
 win.on('resize', function() {
   clearTimeout(static_interval);

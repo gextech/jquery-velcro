@@ -22,9 +22,10 @@
   "license": "MIT",
   "devDependencies": {
     "bower": "^1.7.1",
+    "chromedriver": "^2.30.1",
     "coffeelint": "^1.12.1",
     "coffeescript": "^1.12.5",
-    "nahual": "pateketrueke/nahual",
+    "nahual": "^0.1.4",
     "nightwatch": "^0.9.7",
     "tarima": "^2.0.0"
   },
