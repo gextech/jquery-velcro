@@ -36,6 +36,17 @@ html = $('html,body')
 body = $(document.body)
 
 # ;-)
+
+#passive
+supportsPassive = false
+try
+  opts = Object.defineProperty({}, 'passive', get: ->
+    supportsPassive = true
+    return
+  )
+  window.addEventListener 'test', null, opts
+catch e
+
 debug =
   is_enabled: false
 
@@ -103,10 +114,10 @@ prevent_scroll = (e) ->
   delta = if (e.type is 'mousewheel') then e.originalEvent.wheelDelta else (e.originalEvent.detail * -40)
   if (delta < 0 and (@scrollHeight - @offsetHeight - @scrollTop) <= 0)
     @scrollTop = @scrollHeight
-    e.preventDefault()
+   # e.preventDefault()
   else if (delta > 0 and delta > @scrollTop)
     @scrollTop = 0
-    e.preventDefault()
+    #e.preventDefault()
 
 trigger = (type, params) ->
   return unless event_handler
@@ -323,7 +334,8 @@ initialize_sticky = (node) ->
     el.parent()
 
   if data.fit
-    el.on 'DOMMouseScroll mousewheel', prevent_scroll
+    node.addEventListener 'DOMMouseScroll', prevent_scroll, if supportsPassive then passive: true else false
+    node.addEventListener 'wheel', prevent_scroll, if supportsPassive then passive: true else false
 
   # auto-grouping
   unless data.group
@@ -526,12 +538,15 @@ update_everything = (destroy) ->
 $('img, iframe').on 'load error', ->
   update_everything()
 
-win.on 'touchmove scroll', ->
+isTicking = ->
   unless ticking
     requestAnimationFrame ->
       test_for_scroll_and_offsets()
       ticking = false
   ticking = true
+
+window.addEventListener 'touchmove', isTicking ,if supportsPassive then passive: true else false
+window.addEventListener 'scroll', isTicking ,if supportsPassive then passive: true else false
 
 win.on 'resize', ->
   clearTimeout static_interval
